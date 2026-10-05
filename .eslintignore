@@ -1,0 +1,11 @@
+node_modules
+dist
+release
+coverage
+playwright-report
+test-results
+tmp
+build
+backend/node_modules
+installer-bootstrapper
+tools

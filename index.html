@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="./fonts/Vazirmatn-variable.woff2" as="font" type="font/woff2" crossorigin />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#63AEE3" />
+    
+    <!-- CSP for Electron Security: Allows local resources, HTTPS APIs, DevTools, and loopback backend probes. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https: file: ws:; connect-src 'self' https: ws: wss: http://localhost:* http://127.0.0.1:*;" />
+
+    <title>WareKeep Community</title>
+    
+    <script>
+      // --- CRITICAL ERROR HANDLER ---
+      // This script runs before React to catch bundling/startup errors (White Screen of Death)
+      window.onerror = function(message, source, lineno, colno, error) {
+        var root = document.getElementById('root');
+        // If React has already rendered something, assume it handles the error via ErrorBoundary
+        if (root && root.childElementCount > 0) return false;
+
+        var container = document.createElement('div');
+        container.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#f8fafc;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;font-family:system-ui,-apple-system,sans-serif;direction:ltr;text-align:left;box-sizing:border-box;';
+        
+        var card = document.createElement('div');
+        card.style.cssText = 'background:white;padding:30px;border-radius:16px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);max-width:600px;width:100%;border:1px solid #e2e8f0;';
+        
+        var title = document.createElement('h2');
+        title.style.cssText = 'color:#ef4444;margin:0 0 10px 0;font-size:1.5rem;display:flex;align-items:center;gap:10px;';
+        title.innerHTML = '<span style="font-size:2rem">⚠️</span> Startup Error';
+        
+        var desc = document.createElement('p');
+        desc.style.cssText = 'color:#64748b;margin-bottom:20px;font-size:0.9rem;line-height:1.5;';
+        desc.textContent = 'The application failed to start correctly. This is usually due to a javascript error before React could mount.';
+
+        var pre = document.createElement('div');
+        pre.style.cssText = 'background:#1e293b;color:#f8fafc;padding:15px;border-radius:8px;font-family:monospace;font-size:0.8rem;overflow-x:auto;margin-bottom:20px;border:1px solid #334155;';
+        pre.innerHTML = '<strong>' + message + '</strong><br/><span style="opacity:0.7">' + source + ':' + lineno + ':' + colno + '</span><br/><br/>' + (error && error.stack ? error.stack.replace(/\n/g, '<br/>') : '');
+
+        var btn = document.createElement('button');
+        btn.textContent = 'Reload Application';
+        btn.onclick = function() { window.location.reload(); };
+        btn.style.cssText = 'background:#2563eb;color:white;border:none;padding:12px 24px;border-radius:8px;font-weight:600;cursor:pointer;transition:background 0.2s;width:100%;font-size:1rem;';
+        btn.onmouseover = function() { this.style.background = '#1d4ed8'; };
+        btn.onmouseout = function() { this.style.background = '#2563eb'; };
+
+        card.appendChild(title);
+        card.appendChild(desc);
+        card.appendChild(pre);
+        card.appendChild(btn);
+        container.appendChild(card);
+        document.body.appendChild(container);
+        
+        // Return false to let the error propagate to console as well
+        return false;
+      };
+    </script>
+
+
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "recharts": "https://esm.sh/recharts@^3.6.0",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.90.1",
+    "@google/genai": "https://esm.sh/@google/genai@^1.37.0",
+    "electron": "https://esm.sh/electron@^40.0.0",
+    "path": "https://esm.sh/path@^0.12.7",
+    "fs": "https://esm.sh/fs@^0.0.1-security",
+    "url": "https://esm.sh/url@^0.11.4",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "crypto": "https://esm.sh/crypto@^1.0.1",
+    "electron-log/": "https://esm.sh/electron-log@^5.4.3/",
+    "os": "https://esm.sh/os@^0.1.2",
+    "module": "https://esm.sh/module@^2.0.0",
+    "socket.io-client": "https://esm.sh/socket.io-client@^4.8.3"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/index.community.tsx"></script>
+</body>
+</html>

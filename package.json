@@ -1,0 +1,75 @@
+{
+  "name": "warekeep-community",
+  "private": true,
+  "version": "1.0.10",
+  "type": "module",
+  "main": "electron/main.js",
+  "warekeepEdition": "community",
+  "description": "Offline inventory, sales, purchases, and local accounts for pharmacies and small businesses.",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "overrides": {
+    "app-builder-lib": {
+      "@electron/get": "5.1.0"
+    }
+  },
+  "scripts": {
+    "dev": "cross-env VITE_APP_EDITION=community vite",
+    "dev:frontend": "npm run dev",
+    "build": "cross-env VITE_APP_EDITION=community vite build",
+    "preview": "vite preview",
+    "lint": "eslint --ext .ts,.tsx,.js src electron e2e vite.config.ts vitest.config.ts playwright.community.config.ts",
+    "typecheck": "tsc --noEmit",
+    "test:unit": "vitest run --config vitest.config.ts",
+    "test:community:build": "vitest run --config vitest.config.ts electron/communityPolicy.test.js scripts/__tests__/communityBuild.test.mjs",
+    "test:community:desktop": "node scripts/smoke-community-desktop.mjs",
+    "test:source-export": "node --test scripts/__tests__/export-community-source.node-test.mjs scripts/__tests__/community-source-specialization.node-test.mjs scripts/__tests__/community-publication-scope.node-test.mjs scripts/__tests__/community-publication-package.node-test.mjs scripts/__tests__/community-medicine-publication.node-test.mjs",
+    "verify:dependency-notices": "node scripts/generate-dependency-notices.mjs --check",
+    "test:e2e:community": "playwright test --config playwright.community.config.ts",
+    "verify:artifacts": "node scripts/assert-client-artifacts-clean.mjs",
+    "electron:dev": "concurrently -k \"npm run dev\" \"npm run electron:start\"",
+    "electron:start": "wait-on http://127.0.0.1:5175 && electron .",
+    "electron:build": "node scripts/build-community-desktop.mjs",
+    "electron:build:dir": "node scripts/build-community-desktop.mjs --dir",
+    "source:export": "node scripts/export-community-source.mjs"
+  },
+  "build": {
+    "extends": "./scripts/electron-builder.community.cjs"
+  },
+  "dependencies": {
+    "@zxing/library": "^0.21.3",
+    "adm-zip": "^0.6.1",
+    "electron-log": "^5.1.0",
+    "hash-wasm": "^4.12.0",
+    "lucide-react": "^1.24.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "recharts": "^2.10.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.53.0",
+    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/react": "^16.0.0",
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@typescript-eslint/parser": "^8.46.2",
+    "@vitejs/plugin-react": "^6.0.3",
+    "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^43.7.7",
+    "electron-builder": "26.15.3",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "jsdom": "^26.1.0",
+    "postcss": "^8.5.28",
+    "tailwindcss": "4.3.3",
+    "typescript": "^5.2.2",
+    "vite": "^8.1.4",
+    "vitest": "^4.1.11",
+    "wait-on": "^7.2.0",
+    "@tailwindcss/postcss": "4.3.3"
+  }
+}
