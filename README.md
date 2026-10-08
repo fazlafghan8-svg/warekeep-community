@@ -13,7 +13,7 @@ English is the default interface language for a fresh workspace, with the Gregor
 - [Installation and first-use guide](docs/WINDOWS_INSTALL.md) — choose a download, add an item, record a sale, and save a backup.
 - [Release notes and all downloads](https://github.com/fazlafghan8-svg/warekeep-community/releases/tag/v1.0.10).
 
-Internet access is needed to download the files. Afterward, core features work offline without an online account or paid subscription. Both downloads are unsigned and may show a Windows publisher warning. Installation and first-use checks passed on the maintainer's Windows computer; a second computer has not yet been tested. Export a backup before updating or switching packages.
+Internet access is needed to download the files. Afterward, core features work offline without an online account or paid subscription. Both downloads are unsigned and may show a Windows publisher warning. Installation and first-use checks passed on the maintainer's Windows computer and an [independent GitHub-hosted Windows runner](https://github.com/fazlafghan8-svg/warekeep-community/actions/runs/37776084314). Manual testing on another user's physical computer remains to be done. Export a backup before updating or switching packages.
 
 ## Screenshots
 
@@ -89,7 +89,7 @@ npm run verify:artifacts -- dist
 
 For packaged desktop checks, build the Windows application and run `npm run test:community:desktop`. Record results against the exact source commit and executable. An older edition's successful checks do not establish that this edition passed. GitHub CI status must come from an actual workflow run.
 
-As a practical check, add a made-up product with quantity 10, sell 2, and verify quantity 8 after closing and reopening. Export a backup and restore it into an empty test workspace. The 1.0.10 download's Setup installation, Portable launch, sale, restart, and backup restoration checks passed on the maintainer's computer. Testing on another computer, physical printing, data encryption, and persistence beyond three days require separate checks. See the [download guide](docs/WINDOWS_INSTALL.md#what-was-checked-for-this-release) for the release's test scope.
+As a practical check, add a made-up product with quantity 10, sell 2, and verify quantity 8 after closing and reopening. Export a backup and restore it into an empty test workspace. The 1.0.10 download's Setup installation, Portable launch, sale, restart, and backup restoration checks passed locally and on an independent GitHub-hosted Windows runner. Manual testing on another user's physical computer, physical printing, data encryption, and persistence beyond three days require separate checks. See the [download guide](docs/WINDOWS_INSTALL.md#what-was-checked-for-this-release) for the release's test scope.
 
 ## License and contribution
 

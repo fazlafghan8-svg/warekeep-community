@@ -69,9 +69,13 @@ Restoring replaces the current workspace's records when you choose a valid backu
 
 The Windows files were built on **8 October 2026** from [source commit 05dbd9449016c5beb61a3122e71ddcaa94e0e1dc](https://github.com/fazlafghan8-svg/warekeep-community/commit/05dbd9449016c5beb61a3122e71ddcaa94e0e1dc). The source's [GitHub Actions checks passed](https://github.com/fazlafghan8-svg/warekeep-community/actions/runs/37734027684).
 
-On the maintainer's Windows computer, checks passed for Setup installation and removal, Portable launch, offline operation, a test sale reducing stock from 10 to 8, records after reopening, and exporting and restoring a backup into a fresh test workspace. Tests used made-up data. The backup test checked the exported file and restoration; it used a test download handler instead of the normal Windows save dialog.
+On the maintainer's Windows computer, checks passed for Setup installation and removal, Portable launch, offline operation, a test sale reducing stock from 10 to 8, records after reopening, and exporting and restoring a backup into a fresh test workspace.
 
-This release has not yet been tested on a second computer. Physical printing, encryption of stored records, and keeping records beyond three days were not tested in this release step. Try it with made-up records on your computer before relying on it for business data.
+An [independent GitHub-hosted Windows validation run passed](https://github.com/fazlafghan8-svg/warekeep-community/actions/runs/37776084314) on Windows version `10.0.26100.0`. It downloaded the released Setup and Portable files, verified their SHA-256 values, and passed installation, the 10-to-8 sale, saved records after reopening, and backup export and restoration followed by another restart. It also launched the real Portable wrapper, verified that its executable and packaged application matched the installed package, checked offline operation and local saving and loading, and verified uninstall cleanup.
+
+These checks used made-up data in isolated test workspaces. Automated backup tests checked the exported file and restoration using a test download handler; the normal Windows save dialog was not tested.
+
+The independent check ran on a GitHub-hosted machine. Manual testing on another user's physical computer remains to be done. Physical printing, encryption of stored records, and keeping records beyond three days were not tested in this release step. Try it with made-up records on your computer before relying on it for business data.
 
 ### File verification
 
