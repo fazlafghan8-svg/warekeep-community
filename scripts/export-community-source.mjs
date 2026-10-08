@@ -19,6 +19,8 @@ export const ROOT_FILES = Object.freeze([
     '.github/workflows/community-ci.yml',
     'docs/OPEN_SOURCE_STEPS.md', 'docs/FIRST_STEPS.md',
     'docs/COMMUNITY_LICENSE.md', 'docs/OPEN_SOURCE_SCOPE.md',
+    'docs/WINDOWS_INSTALL.md',
+    'docs/images/dashboard.png', 'docs/images/inventory.png',
     'scripts/export-community-source.mjs',
     'scripts/community-publication-scope.mjs',
     'scripts/community-source-specialization.mjs',

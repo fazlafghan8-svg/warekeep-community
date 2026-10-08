@@ -4,6 +4,25 @@ An offline inventory, sales, and purchasing application for a business on a sing
 
 English is the default interface language for a fresh workspace, with the Gregorian calendar and the device's local time zone. Persian/Dari remains available in **Settings → General**. Changing the language does not convert existing currencies or amounts. For a nontechnical introduction, read [First steps](docs/FIRST_STEPS.md).
 
+## Download for Windows
+
+**WareKeep Community 1.0.10 · Windows x64**
+
+- [Download Setup](https://github.com/fazlafghan8-svg/warekeep-community/releases/download/v1.0.10/WareKeep-Community-Setup-1.0.10-x64.exe) — installs the application and adds a shortcut; recommended for regular use.
+- [Download Portable](https://github.com/fazlafghan8-svg/warekeep-community/releases/download/v1.0.10/WareKeep-Community-Portable-1.0.10-x64.exe) — runs without installing the application.
+- [Installation and first-use guide](docs/WINDOWS_INSTALL.md) — choose a download, add an item, record a sale, and save a backup.
+- [Release notes and all downloads](https://github.com/fazlafghan8-svg/warekeep-community/releases/tag/v1.0.10).
+
+Internet access is needed to download the files. Afterward, core features work offline without an online account or paid subscription. Both downloads are unsigned and may show a Windows publisher warning. Installation and first-use checks passed on the maintainer's Windows computer; a second computer has not yet been tested. Export a backup before updating or switching packages.
+
+## Screenshots
+
+These screenshots show the real Community application with made-up demonstration records.
+
+![WareKeep Community dashboard with demonstration sales and inventory](docs/images/dashboard.png)
+
+![WareKeep Community inventory with demonstration products and stock](docs/images/inventory.png)
+
 The [official public repository](https://github.com/fazlafghan8-svg/warekeep-community) contains the Community source, and private vulnerability reporting is enabled. Check [GitHub Actions](https://github.com/fazlafghan8-svg/warekeep-community/actions) for the workflow results associated with the version you use.
 
 ## Features
@@ -38,7 +57,7 @@ npm run preview
 
 Browser records belong to that browser profile and site address. Clearing browser storage can remove them. Export backups before relying on a workspace; desktop persistence and restore must also be checked for the version you use.
 
-## Windows desktop application
+## Build the Windows application from source
 
 ```sh
 npm run electron:dev
@@ -70,7 +89,7 @@ npm run verify:artifacts -- dist
 
 For packaged desktop checks, build the Windows application and run `npm run test:community:desktop`. Record results against the exact source commit and executable. An older edition's successful checks do not establish that this edition passed. GitHub CI status must come from an actual workflow run.
 
-As a practical check, add a made-up product with quantity 10, sell 2, and verify quantity 8 after closing and reopening. Export a backup and restore it into an empty test workspace. Installer execution, testing on another computer, physical printing, data encryption, and persistence beyond three days require separate checks.
+As a practical check, add a made-up product with quantity 10, sell 2, and verify quantity 8 after closing and reopening. Export a backup and restore it into an empty test workspace. The 1.0.10 download's Setup installation, Portable launch, sale, restart, and backup restoration checks passed on the maintainer's computer. Testing on another computer, physical printing, data encryption, and persistence beyond three days require separate checks. See the [download guide](docs/WINDOWS_INSTALL.md#what-was-checked-for-this-release) for the release's test scope.
 
 ## License and contribution
 
