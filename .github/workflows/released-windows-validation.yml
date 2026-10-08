@@ -1,0 +1,38 @@
+name: Released Windows validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/released-windows-validation.yml'
+      - 'scripts/verify-released-windows*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-published-release:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Verify published Setup and Portable packages
+        shell: pwsh
+        run: ./scripts/verify-released-windows.ps1 -EvidenceDirectory '${{ runner.temp }}/warekeep-release-validation'
+      - name: Save synthetic validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: warekeep-v1.0.10-windows-${{ github.run_id }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/warekeep-release-validation/*.json
+            ${{ runner.temp }}/warekeep-release-validation/*.log
+            ${{ runner.temp }}/warekeep-release-validation/*.png

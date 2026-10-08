@@ -3,7 +3,7 @@ import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
-import { applyCommunityOverrides, prepareCommunitySharedSources, selectCommunityDependencies, sourceImports, forbiddenPublicPaths } from './community-publication-scope.mjs';
+import { COMMUNITY_OVERRIDE_ROOT, applyCommunityOverrides, prepareCommunitySharedSources, selectCommunityDependencies, sourceImports, forbiddenPublicPaths } from './community-publication-scope.mjs';
 import { specializeCommunitySources } from './community-source-specialization.mjs';
 import { prepareCommunityPublicationPackage } from './community-publication-package.mjs';
 import { prepareCommunityMedicineSources } from './community-medicine-publication.mjs';
@@ -17,6 +17,7 @@ export const ROOT_FILES = Object.freeze([
     'tailwind.legacy-theme.mjs', 'TAILWIND_LEGACY_THEME_LICENSE.txt',
     '.editorconfig', '.eslintrc.cjs', '.eslintignore',
     '.github/workflows/community-ci.yml',
+    '.github/workflows/released-windows-validation.yml',
     'docs/OPEN_SOURCE_STEPS.md', 'docs/FIRST_STEPS.md',
     'docs/COMMUNITY_LICENSE.md', 'docs/OPEN_SOURCE_SCOPE.md',
     'docs/WINDOWS_INSTALL.md',
@@ -36,6 +37,9 @@ export const ROOT_FILES = Object.freeze([
     'scripts/__tests__/buildDeadline.test.mjs',
     'scripts/tailwind-v3-cascade.mjs', 'scripts/__tests__/tailwindCascade.test.mjs',
     'scripts/smoke-community-desktop.mjs',
+    'scripts/verify-released-windows.ps1',
+    'scripts/verify-released-windows-ui.mjs',
+    'scripts/verify-released-windows-portable.mjs',
     'scripts/assert-client-artifacts-clean.mjs',
     'scripts/__tests__/communityBuild.test.mjs',
     'scripts/__tests__/export-community-source.node-test.mjs',
@@ -222,7 +226,11 @@ export function exportCommunitySource(projectRoot) {
     collectSources(root, 'electron', candidates, excluded);
     let contents = new Map();
     for (const filename of [...candidates].sort()) {
-        const source = safePath(root, filename);
+        // Explicit publication files may live only in overrides so that Community
+        // workflows are not activated in the separate commercial checkout.
+        const source = ROOT_FILES.includes(filename)
+            ? safePath(root, filename, { optional: true }) ?? safePath(root, `${COMMUNITY_OVERRIDE_ROOT}/${filename}`)
+            : safePath(root, filename);
         if (!fs.statSync(source).isFile())
             throw new Error(`Expected a source file: ${filename}`);
         contents.set(filename, fs.readFileSync(source));

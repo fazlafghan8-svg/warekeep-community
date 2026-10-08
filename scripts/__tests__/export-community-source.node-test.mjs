@@ -39,6 +39,41 @@ function importFixtureSource(root, filename) {
   fs.appendFileSync(path.join(root, 'src/index.community.tsx'), `import ${JSON.stringify(relative)};\n`);
 }
 
+test('publishes allowlisted override-only workflow and PowerShell files without activating the source checkout', () => {
+  const root = fixture();
+  const publicationOnlyFiles = new Map([
+    ['.github/workflows/released-windows-validation.yml', Buffer.from('name: Community validation fixture\non: workflow_dispatch\n')],
+    ['scripts/verify-released-windows.ps1', Buffer.from("Write-Output 'Community validation fixture'\n")],
+  ]);
+  for (const [filename, contents] of publicationOnlyFiles) {
+    fs.unlinkSync(path.join(root, filename));
+    write(root, `community-publication/overrides/${filename}`, contents);
+  }
+  const result = exportCommunitySource(root);
+  assert.equal(result.report.sourceWritten, true);
+  assert.deepEqual(result.report.sensitivePaths, []);
+  for (const [filename, contents] of publicationOnlyFiles) {
+    assert.equal(fs.existsSync(path.join(root, filename)), false);
+    assert.deepEqual(fs.readFileSync(path.join(result.output, 'source', filename)), contents);
+    assert.deepEqual(fs.readFileSync(path.join(root, 'community-publication/overrides', filename)), contents);
+    assert.ok(result.manifest.some(file => file.path === filename));
+  }
+});
+
+test('an override-only publication workflow does not hide a missing runtime dependency', () => {
+  const root = fixture();
+  const workflow = '.github/workflows/released-windows-validation.yml';
+  fs.unlinkSync(path.join(root, workflow));
+  write(root, `community-publication/overrides/${workflow}`, 'name: Community validation fixture\n');
+  fs.appendFileSync(path.join(root, 'src/index.community.tsx'), "import './missing-runtime';\n");
+  const result = exportCommunitySource(root);
+  assert.equal(result.report.status, 'blocked');
+  assert.equal(result.report.sourceWritten, false);
+  assert.deepEqual(result.report.missingImportPaths, ['src/index.community.tsx']);
+  assert.equal(fs.existsSync(path.join(result.output, 'source')), false);
+  assert.equal(fs.existsSync(path.join(root, workflow)), false);
+});
+
 test('only publishes allowlisted source into distinct snapshots and preserves originals', () => {
   const root = fixture();
   for (const filename of ['.git/config', '.env', 'backend/.env', 'exports/customers.json', 'runtime/session.json', 'deploy/bundle.zip', 'docs/WAREKEEP_CHAT_ARCHIVE_FA.md', 'build/LICENSE.txt', 'src/obj/state.ts', 'src/data.json', 'src/AdminApp.tsx', 'src/index.tsx', 'src/components/admin/AdminControlPlaneApp.tsx', 'src/components/installer/WareKeepInstallerMockup.tsx', 'src/services/adminDiagnosticsService.ts', 'electron/bin/session.js']) {
