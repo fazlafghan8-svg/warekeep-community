@@ -16,6 +16,12 @@ const startOfDay = (value: Date) => {
     next.setHours(0, 0, 0, 0);
     return next;
 };
+const toLocalDateKey = (value: Date) => {
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
 const diffInDays = (from: Date, to: Date) => Math.floor((startOfDay(to).getTime() - startOfDay(from).getTime()) / 86400000);
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 type DashboardReceivableAccount = {
@@ -128,7 +134,7 @@ export const buildDashboardModel = ({ medicines, invoices, customers, expenses, 
     for (let offset = periodDays - 1; offset >= 0; offset -= 1) {
         const day = new Date(today);
         day.setDate(today.getDate() - offset);
-        trendMap.set(day.toISOString().slice(0, 10), {
+        trendMap.set(toLocalDateKey(day), {
             label: formatAppDate(day, settings, 'dashboard', { month: 'short', day: 'numeric' }),
             sales: 0,
             expenses: 0,
@@ -220,7 +226,7 @@ export const buildDashboardModel = ({ medicines, invoices, customers, expenses, 
         const netSales = Math.max(0, grossSales - discount - returnSales);
         const paidAmount = Math.max(0, safeNumber(invoice.amountPaid) - returnRefunded);
         totalSystemCollected += paidAmount;
-        const trendRow = trendMap.get(invoiceDate.toISOString().slice(0, 10));
+        const trendRow = trendMap.get(toLocalDateKey(invoiceDate));
         if (trendRow) {
             trendRow.sales += netSales;
         }
@@ -317,7 +323,7 @@ export const buildDashboardModel = ({ medicines, invoices, customers, expenses, 
         }
         const amount = safeNumber(expense.amount);
         totalSystemExpenses += amount;
-        const trendRow = trendMap.get(expenseDate.toISOString().slice(0, 10));
+        const trendRow = trendMap.get(toLocalDateKey(expenseDate));
         if (trendRow) {
             trendRow.expenses += amount;
         }

@@ -114,3 +114,69 @@ describe('buildDashboardModel repeat customer rate', () => {
     expect(model30.repeatCustomerRate).toBeCloseTo(100 / 3, 5);
   });
 });
+
+describe('buildDashboardModel daily trend', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 2, 30, 23, 59, 59));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('groups sales and expenses from the same local day in its final trend row', () => {
+    const morning = new Date(2026, 2, 30, 0, 30).toISOString();
+    const noon = new Date(2026, 2, 30, 12).toISOString();
+    const evening = new Date(2026, 2, 30, 23, 30).toISOString();
+    const model = buildDashboardModel({
+      medicines,
+      invoices: [
+        createInvoice('inv-1', 'cust-1', morning, 100),
+        createInvoice('inv-2', 'cust-1', noon, 200),
+        createInvoice('inv-3', 'cust-1', evening, 50),
+      ],
+      customers,
+      expenses: [
+        { id: 'expense-1', title: 'Morning', category: 'Other', date: morning, amount: 10 },
+        { id: 'expense-2', title: 'Noon', category: 'Other', date: noon, amount: 15 },
+        { id: 'expense-3', title: 'Evening', category: 'Other', date: evening, amount: 5 },
+        { id: 'expense-4', title: 'Date only', category: 'Other', date: '2026-03-30', amount: 40 },
+      ],
+      settings,
+      formatters: createAppFormatters('english'),
+      periodDays: 30,
+    });
+
+    expect(model.trend30).toHaveLength(30);
+    expect(model.trend30.at(-1)).toMatchObject({ sales: 350, expenses: 70, net: 280 });
+    expect(model.trend30.slice(0, -1).every((point) => point.sales === 0 && point.expenses === 0)).toBe(true);
+    expect(model.periodSales).toBe(350);
+    expect(model.periodExpenses).toBe(70);
+  });
+
+  it('excludes transactions before the selected local range while keeping its first day', () => {
+    const beforeRange = new Date(2026, 1, 28, 23, 30).toISOString();
+    const firstDay = new Date(2026, 2, 1, 0, 30).toISOString();
+    const model = buildDashboardModel({
+      medicines,
+      invoices: [
+        createInvoice('inv-1', 'cust-1', beforeRange, 500),
+        createInvoice('inv-2', 'cust-1', firstDay, 75),
+      ],
+      customers,
+      expenses: [
+        { id: 'expense-1', title: 'Before range', category: 'Other', date: beforeRange, amount: 70 },
+        { id: 'expense-2', title: 'First day', category: 'Other', date: firstDay, amount: 20 },
+      ],
+      settings,
+      formatters: createAppFormatters('english'),
+      periodDays: 30,
+    });
+
+    expect(model.trend30[0]).toMatchObject({ sales: 75, expenses: 20, net: 55 });
+    expect(model.trend30.slice(1).every((point) => point.sales === 0 && point.expenses === 0)).toBe(true);
+    expect(model.periodSales).toBe(75);
+    expect(model.periodExpenses).toBe(20);
+  });
+});

@@ -82,7 +82,13 @@ describe('ReferenceDashboard', () => {
         expect(screen.queryByText('AI Assistant')).not.toBeInTheDocument();
     });
     it('keeps the peak sales summary above the chart layer', () => {
-        renderDashboard();
+        const demo = getGuestDemoData('english');
+        renderDashboard({
+            invoices: demo.invoices.map((invoice, index) => ({
+                ...invoice,
+                date: index === 0 ? '2026-03-28T10:00:00.000Z' : '2026-03-29T10:00:00.000Z',
+            })),
+        });
         expect(screen.getByTestId('dashboard-peak-point')).toHaveClass('z-20');
     });
     it('opens the widget drawer and routes through widget selection', () => {
